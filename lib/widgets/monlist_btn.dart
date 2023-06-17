@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:provider/provider.dart';
 
+import '../consts/firebase_consts.dart';
 import '../providers/month_provider.dart';
+import '../services/global_methods.dart';
 import '../services/utils.dart';
 
 class MONBTN extends StatelessWidget {
@@ -22,9 +25,24 @@ class MONBTN extends StatelessWidget {
 
     final Color color = Utils(context).color;
     return GestureDetector(
-      onTap: () {
-        monthlistProvider.addProductsToMonthlist(
-            productId: productId, quantity: quantity);
+      onTap: () async {
+        try {
+          final User? user = authInstance.currentUser;
+
+          if (user == null) {
+            GlobalMethods.errorDialog(
+                subtitle: 'No user found,Please login first', context: context);
+            return;
+          }
+          if (isInMonthlist == false && isInMonthlist != null) {
+            GlobalMethods.addToMonth(
+                productId: productId, quantity: quantity, context: context);
+            await monthlistProvider.fetchMonth();
+          }
+        } catch (error) {
+        } finally {}
+        //  monthlistProvider.addProductsToMonthlist(
+        //     productId: productId, quantity: quantity);
       },
       child: Column(
         children: [

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:provider/provider.dart';
+import 'package:superbuyy/providers/products_provider.dart';
 import 'package:superbuyy/widgets/text_widget.dart';
 
 import '../../providers/month_provider.dart';
@@ -44,8 +45,9 @@ class MonthlistScreen extends StatelessWidget {
                       GlobalMethods.warningDialog(
                           title: 'Empty your Monthlist?',
                           subtitle: 'Are you sure?',
-                          fct: () {
-                            monthlistProvider.clearMonthlist();
+                          fct: () async {
+                            await monthlistProvider.clearOnlineMonth();
+                            monthlistProvider.clearLocalMonth();
                           },
                           context: context);
                     },
@@ -78,6 +80,16 @@ class MonthlistScreen extends StatelessWidget {
   Widget _checkout({required BuildContext ctx}) {
     final Color color = Utils(ctx).color;
     Size size = Utils(ctx).getScreenSize;
+    final monthlistProvider = Provider.of<MonthlistProvider>(ctx);
+    final productProvider = Provider.of<ProductsProvider>(ctx);
+    num total = 0.0;
+    monthlistProvider.getMonthlistItems.forEach((key, value) {
+      final getCurrProduct = productProvider.findProdById(value.productId);
+      total += (getCurrProduct.isOnSale
+              ? getCurrProduct.salePrice
+              : getCurrProduct.price) *
+          value.quantity;
+    });
     return SizedBox(
       width: double.infinity,
       height: size.height * 0.1,
@@ -104,7 +116,7 @@ class MonthlistScreen extends StatelessWidget {
           const Spacer(),
           FittedBox(
             child: TextWidget(
-              text: 'Total: \₹160',
+              text: 'Total: \₹${total.toStringAsFixed(2)}',
               color: color,
               textSize: 18,
               isTitle: true,

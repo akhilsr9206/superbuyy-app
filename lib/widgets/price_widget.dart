@@ -11,13 +11,14 @@ class PriceWidget extends StatelessWidget {
     required this.textPrice,
     required this.isOnSale,
   }) : super(key: key);
-  final double salePrice, price;
+  final num price;
+  final num salePrice;
   final String textPrice;
   final bool isOnSale;
   @override
   Widget build(BuildContext context) {
     final Color color = Utils(context).color;
-    double userPrice = isOnSale ? salePrice : price;
+    num userPrice = isOnSale ? salePrice : price;
     return FittedBox(
         child: Row(
       children: [

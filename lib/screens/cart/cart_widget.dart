@@ -42,7 +42,7 @@ class _CartWidgetState extends State<CartWidget> {
     final productProvider = Provider.of<ProductsProvider>(context);
     final cartModel = Provider.of<CartModel>(context);
     final getCurrentProduct = productProvider.findProdById(cartModel.productId);
-    double usedPrice = getCurrentProduct.isOnSale
+    num usedPrice = getCurrentProduct.isOnSale
         ? getCurrentProduct.salePrice
         : getCurrentProduct.price;
     final cartProvider = Provider.of<CartProvider>(context);
@@ -166,8 +166,12 @@ class _CartWidgetState extends State<CartWidget> {
                       child: Column(
                         children: [
                           InkWell(
-                            onTap: () {
-                              cartProvider.removeOneItem(cartModel.productId);
+                            onTap: () async {
+                              await cartProvider.removeOneItem(
+                                cartId: cartModel.id,
+                                productId: cartModel.productId,
+                                quantity: cartModel.quantity,
+                              );
                             },
                             child: const Icon(
                               CupertinoIcons.cart_badge_minus,
@@ -183,7 +187,8 @@ class _CartWidgetState extends State<CartWidget> {
                             isInWishlist: _isInWishlist,
                           ),
                           TextWidget(
-                            text: '\₹${usedPrice.toStringAsFixed(2)}',
+                            text:
+                                '\₹${(usedPrice * int.parse(_quantityTextController.text)).toString()}',
                             color: color,
                             textSize: 18,
                             maxLines: 1,

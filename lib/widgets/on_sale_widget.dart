@@ -1,4 +1,5 @@
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:provider/provider.dart';
@@ -6,10 +7,12 @@ import 'package:superbuyy/services/utils.dart';
 import 'package:superbuyy/widgets/heart_btn.dart';
 import 'package:superbuyy/widgets/text_widget.dart';
 
+import '../consts/firebase_consts.dart';
 import '../inner_screens/product_details.dart';
 import '../models/products_model.dart';
 import '../providers/cart_provider.dart';
 import '../providers/wishlist_provider.dart';
+import '../services/global_methods.dart';
 import 'price_widget.dart';
 
 class OnSaleWidget extends StatefulWidget {
@@ -76,10 +79,24 @@ class _OnSaleWidgetState extends State<OnSaleWidget> {
                               GestureDetector(
                                 onTap: _isInCart
                                     ? null
-                                    : () {
-                                        cartProvider.addProductsToCart(
+                                    : () async {
+                                        final User? user =
+                                            authInstance.currentUser;
+                                        if (user == null) {
+                                          GlobalMethods.errorDialog(
+                                              subtitle:
+                                                  'No user found,Please login first',
+                                              context: context);
+                                          return;
+                                        }
+                                        await GlobalMethods.addToCart(
                                             productId: productModel.id,
-                                            quantity: 1);
+                                            quantity: 1,
+                                            context: context);
+                                        await cartProvider.fetchCart();
+                                        // cartProvider.addProductsToCart(
+                                        //     productId: productModel.id,
+                                        //     quantity: 1);
                                       },
                                 child: Icon(
                                   _isInCart

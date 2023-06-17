@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:superbuyy/screens/month/month_screen.dart';
 import 'package:superbuyy/screens/week/week_screen.dart';
 
-import '../provider/dark_theme_provider.dart';
+import '../providers/dark_theme_provider.dart';
 import '../widgets/text_widget.dart';
 
 class ListScreen extends StatelessWidget {

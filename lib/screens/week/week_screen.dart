@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:superbuyy/screens/week/week_widget.dart';
 import 'package:superbuyy/widgets/text_widget.dart';
 
+import '../../providers/products_provider.dart';
 import '../../providers/week_provider.dart';
 import '../../services/global_methods.dart';
 import '../../services/utils.dart';
@@ -44,8 +45,9 @@ class WeeklistScreen extends StatelessWidget {
                       GlobalMethods.warningDialog(
                           title: 'Empty your week list?',
                           subtitle: 'Are you sure?',
-                          fct: () {
-                            weeklistProvider.clearWeeklist();
+                          fct: () async {
+                            await weeklistProvider.clearOnlinewWeek();
+                            weeklistProvider.clearLocalWeek();
                           },
                           context: context);
                     },
@@ -78,6 +80,16 @@ class WeeklistScreen extends StatelessWidget {
   Widget _checkout({required BuildContext ctx}) {
     final Color color = Utils(ctx).color;
     Size size = Utils(ctx).getScreenSize;
+    final productProvider = Provider.of<ProductsProvider>(ctx);
+    final weeklistProvider = Provider.of<WeeklistProvider>(ctx);
+    num total = 0.0;
+    weeklistProvider.getWeeklistItems.forEach((key, value) {
+      final getCurrProduct = productProvider.findProdById(value.productId);
+      total += (getCurrProduct.isOnSale
+              ? getCurrProduct.salePrice
+              : getCurrProduct.price) *
+          value.quantity;
+    });
     return SizedBox(
       width: double.infinity,
       height: size.height * 0.1,
@@ -104,7 +116,7 @@ class WeeklistScreen extends StatelessWidget {
           const Spacer(),
           FittedBox(
             child: TextWidget(
-              text: 'Total: \₹160',
+              text: 'Total: \₹${total.toStringAsFixed(2)}',
               color: color,
               textSize: 18,
               isTitle: true,

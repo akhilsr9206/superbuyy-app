@@ -43,7 +43,7 @@ class _MonthlistWidgetState extends State<MonthlistWidget> {
     final monthlistModel = Provider.of<MonthlistModel>(context);
     final getCurrentProduct =
         productProvider.findProdById(monthlistModel.productId);
-    double usedPrice = getCurrentProduct.isOnSale
+    num usedPrice = getCurrentProduct.isOnSale
         ? getCurrentProduct.salePrice
         : getCurrentProduct.price;
     final monthlistProvider = Provider.of<MonthlistProvider>(context);
@@ -168,9 +168,11 @@ class _MonthlistWidgetState extends State<MonthlistWidget> {
                       child: Column(
                         children: [
                           InkWell(
-                            onTap: () {
-                              monthlistProvider
-                                  .removeOneItem(monthlistModel.productId);
+                            onTap: () async {
+                              await monthlistProvider.removeOneItem(
+                                  cartId: monthlistModel.id,
+                                  productId: monthlistModel.productId,
+                                  quantity: monthlistModel.quantity);
                             },
                             child: const Icon(
                               CupertinoIcons.cart_badge_minus,
@@ -186,7 +188,8 @@ class _MonthlistWidgetState extends State<MonthlistWidget> {
                             isInWishlist: _isInWishlist,
                           ),
                           TextWidget(
-                            text: '\₹${usedPrice.toStringAsFixed(2)}',
+                            text:
+                                '\₹${(usedPrice * int.parse(_quantityTextController.text)).toString()}',
                             color: color,
                             textSize: 18,
                             maxLines: 1,

@@ -1,4 +1,5 @@
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -7,8 +8,10 @@ import 'package:superbuyy/providers/cart_provider.dart';
 import 'package:superbuyy/widgets/price_widget.dart';
 import 'package:superbuyy/widgets/text_widget.dart';
 
+import '../consts/firebase_consts.dart';
 import '../inner_screens/product_details.dart';
 import '../providers/wishlist_provider.dart';
+import '../services/global_methods.dart';
 import '../services/utils.dart';
 import 'heart_btn.dart';
 
@@ -166,14 +169,28 @@ class _FeedsWidgetState extends State<FeedsWidget> {
                 child: TextButton(
                   onPressed: _isInCart
                       ? null
-                      : () {
+                      : () async {
                           // if (_isInCart) {
                           //   return;
                           //  }
-                          cartProvider.addProductsToCart(
+
+                          final User? user = authInstance.currentUser;
+                          if (user == null) {
+                            GlobalMethods.errorDialog(
+                                subtitle: 'No user found,Please login first',
+                                context: context);
+                            return;
+                          }
+                          await GlobalMethods.addToCart(
                               productId: productModel.id,
-                              quantity:
-                                  int.parse(_quantityTextController.text));
+                              quantity: int.parse(_quantityTextController.text),
+                              context: context);
+                          await cartProvider.fetchCart();
+
+                          // cartProvider.addProductsToCart(
+                          //     productId: productModel.id,
+                          //     quantity:
+                          //         int.parse(_quantityTextController.text));
                         },
                   child: TextWidget(
                     text: _isInCart ? 'In cart' : 'Add to cart',

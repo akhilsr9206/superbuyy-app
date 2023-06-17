@@ -21,7 +21,7 @@ class WishlistWidget extends StatelessWidget {
     final wishlistProvider = Provider.of<WishlistProvider>(context);
     final getCurrentProduct =
         productProvider.findProdById(wishlistModel.productId);
-    double usedPrice = getCurrentProduct.isOnSale
+    num usedPrice = getCurrentProduct.isOnSale
         ? getCurrentProduct.salePrice
         : getCurrentProduct.price;
     bool? _isInWishlist =

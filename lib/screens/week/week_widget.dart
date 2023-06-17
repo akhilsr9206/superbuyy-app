@@ -43,7 +43,7 @@ class _WeeklistWidgetState extends State<WeeklistWidget> {
     final weeklistModel = Provider.of<WeeklistModel>(context);
     final getCurrentProduct =
         productProvider.findProdById(weeklistModel.productId);
-    double usedPrice = getCurrentProduct.isOnSale
+    num usedPrice = getCurrentProduct.isOnSale
         ? getCurrentProduct.salePrice
         : getCurrentProduct.price;
     final weeklistProvider = Provider.of<WeeklistProvider>(context);
@@ -168,9 +168,11 @@ class _WeeklistWidgetState extends State<WeeklistWidget> {
                       child: Column(
                         children: [
                           InkWell(
-                            onTap: () {
-                              weeklistProvider
-                                  .removeOneItem(weeklistModel.productId);
+                            onTap: () async {
+                              await weeklistProvider.removeOneItem(
+                                  weekId: weeklistModel.id,
+                                  productId: weeklistModel.productId,
+                                  quantity: weeklistModel.quantity);
                             },
                             child: const Icon(
                               CupertinoIcons.cart_badge_minus,
@@ -186,7 +188,8 @@ class _WeeklistWidgetState extends State<WeeklistWidget> {
                             isInWishlist: _isInWishlist,
                           ),
                           TextWidget(
-                            text: '\₹${usedPrice.toStringAsFixed(2)}',
+                            text:
+                                '\₹${(usedPrice * int.parse(_quantityTextController.text)).toString()}',
                             color: color,
                             textSize: 18,
                             maxLines: 1,

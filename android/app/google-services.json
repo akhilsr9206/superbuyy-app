@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "161286466647",
+    "project_id": "super-buy-90a6a",
+    "storage_bucket": "super-buy-90a6a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:161286466647:android:fe5a45ec53e6093d3cc712",
+        "android_client_info": {
+          "package_name": "com.example.superbuyy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "161286466647-na7gg3c5fndv4iebrjn26mnasim2q0d5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.superbuyy",
+            "certificate_hash": "8c42c067c9b9f372990725f683eaafca5762b0c4"
+          }
+        },
+        {
+          "client_id": "161286466647-7ppat3tcvjpgs6nojn8br1t3qgu3ua7r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8Ef12-hJb2Vlm0t2CPfAHUUDRmAhZjuA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "161286466647-7ppat3tcvjpgs6nojn8br1t3qgu3ua7r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:superbuyy/inner_screens/cat_screen.dart';
 import 'package:superbuyy/widgets/text_widget.dart';
 
-import '../provider/dark_theme_provider.dart';
+import '../providers/dark_theme_provider.dart';
 
 class CategoriesWidget extends StatelessWidget {
   const CategoriesWidget(
