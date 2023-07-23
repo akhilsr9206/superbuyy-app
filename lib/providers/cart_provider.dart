@@ -81,7 +81,7 @@ class CartProvider with ChangeNotifier {
       ])
     });
     _cartItems.remove(productId);
-    await fetchCart();
+    //await fetchCart();
     notifyListeners();
   }
 

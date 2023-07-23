@@ -1,10 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:superbuyy/providers/products_provider.dart';
 import 'package:superbuyy/widgets/text_widget.dart';
+import 'package:uuid/uuid.dart';
 
+import '../../consts/firebase_consts.dart';
 import '../../providers/month_provider.dart';
+import '../../providers/orders_provider.dart';
 import '../../services/global_methods.dart';
 import '../../services/utils.dart';
 import '../../widgets/empty_screen.dart';
@@ -82,6 +88,7 @@ class MonthlistScreen extends StatelessWidget {
     Size size = Utils(ctx).getScreenSize;
     final monthlistProvider = Provider.of<MonthlistProvider>(ctx);
     final productProvider = Provider.of<ProductsProvider>(ctx);
+    final ordersProvider = Provider.of<OrdersProvider>(ctx);
     num total = 0.0;
     monthlistProvider.getMonthlistItems.forEach((key, value) {
       final getCurrProduct = productProvider.findProdById(value.productId);
@@ -102,7 +109,48 @@ class MonthlistScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(10),
             child: InkWell(
               borderRadius: BorderRadius.circular(10),
-              onTap: () {},
+              onTap: () async {
+                User? user = authInstance.currentUser;
+                final productProvider =
+                    Provider.of<ProductsProvider>(ctx, listen: false);
+                monthlistProvider.getMonthlistItems.forEach((key, value) async {
+                  final getCurrentProduct =
+                      productProvider.findProdById(value.productId);
+
+                  try {
+                    final orderId = const Uuid().v4();
+
+                    await FirebaseFirestore.instance
+                        .collection('orders')
+                        .doc(orderId)
+                        .set({
+                      'orderId': orderId,
+                      'userId': user!.uid,
+                      'productId': value.productId,
+                      'price': (getCurrentProduct.isOnSale
+                              ? getCurrentProduct.salePrice
+                              : getCurrentProduct.price) *
+                          value.quantity,
+                      'totalPrice': total,
+                      'quantity': value.quantity,
+                      'imageUrl': getCurrentProduct.imageUrl,
+                      'userName': user.displayName,
+                      'orderDate': Timestamp.now(),
+                    });
+                    //  await monthlistProvider.clearOnlineMonth();
+                    //    monthlistProvider.clearLocalMonth();
+                    ordersProvider.fetchOrders();
+                    await Fluttertoast.showToast(
+                      msg: "Your order has been placed",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.CENTER,
+                    );
+                  } catch (error) {
+                    GlobalMethods.errorDialog(
+                        subtitle: error.toString(), context: ctx);
+                  } finally {}
+                });
+              },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextWidget(

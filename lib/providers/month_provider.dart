@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:superbuyy/consts/firebase_consts.dart';
 
+import '../consts/firebase_consts.dart';
 import '../models/month_model.dart';
 
 class MonthlistProvider with ChangeNotifier {

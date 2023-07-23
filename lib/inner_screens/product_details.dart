@@ -336,10 +336,10 @@ class _ProductDetailsState extends State<ProductDetails> {
                                               _quantityTextController.text),
                                           context: context);
                                       await cartProvider.fetchCart();
-                                      // cartProvider.addProductsToCart(
-                                      //     productId: getCurrentProduct.id,
-                                      //     quantity: int.parse(
-                                      //         _quantityTextController.text));
+                                      //  cartProvider.addProductsToCart(
+                                      //      productId: getCurrentProduct.id,
+                                      //      quantity: int.parse(
+                                      //          _quantityTextController.text));
                                     },
                               borderRadius: BorderRadius.circular(10),
                               child: Padding(
